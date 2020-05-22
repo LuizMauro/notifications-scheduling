@@ -1,0 +1,10 @@
+{
+  "name": "notification-apps",
+  "version": "V",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "cron": "^1.8.2",
+    "date-fns": "^2.14.0"
+  }
+}
