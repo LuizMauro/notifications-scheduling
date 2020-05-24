@@ -4,19 +4,21 @@ const fetch = require('node-fetch');
 
 const notifications = [ 
   { name:"notficação 1", body: "body notification 1", dayOfWeek: 2, hour: 14, minute: 00 },
-  { name:"notficação 2", body: "body notification 2", dayOfWeek: 6, hour: 22, minute: 17  },
-  { name:"notficação 3", body: "body notification 3", dayOfWeek: 6, hour: 22, minute: 18 },
-  { name:"notficação 4", body: "body notification 4", dayOfWeek: 6, hour: 22, minute: 19 },
-  { name:"notficação 5", body: "body notification 5", dayOfWeek: 6, hour: 22, minute: 20 },
+  { name:"notficação 2", body: "body notification 2", dayOfWeek: 6, hour: 23, minute: 44  },
+  { name:"notficação 3", body: "body notification 3", dayOfWeek: 6, hour: 23, minute: 45 },
+  { name:"notficação 4", body: "body notification 4", dayOfWeek: 6, hour: 23, minute: 45 },
+  { name:"notficação 5", body: "body notification 5", dayOfWeek: 6, hour: 23, minute: 55 },
   ]
 
-  sendPushNotification = async (item) => {
+const usuarios = [ {nome: "Luiz Mauro", token:"ExponentPushToken[VP4zBCEcrzuOK6VFudF4qd]" } ];
+
+  sendPushNotification = async (notification, user) => {
     const message = {
-      to: "ExponentPushToken[VP4zBCEcrzuOK6VFudF4qd]",
+      to: user.token,
       sound: 'default',
-      title: item.name,
-      body: item.body,
-      data: { data: 'CONTEUDO' },
+      title: `${user.nome} venha dar uma olhadinha!`,
+      body: notification.body,
+      data: { data: "Conteudo" },
       _displayInForeground: true,
     };
     
@@ -29,8 +31,13 @@ const notifications = [
       },
       body: JSON.stringify(message),
     });
+
+    if(response){
+      console.log(`${notification.name} - ${user.token}`);
+    }
     
   };
+
   
 new CronJob('0 * * * * *', () => {
   
@@ -38,27 +45,30 @@ new CronJob('0 * * * * *', () => {
 
   console.log("Log -> ", dateCurrent);
 
-  notifications.map( async (item) => {
+  notifications.map((notification) => {
     
-    const scheduledDay = item.dayOfWeek;
+    const scheduledDay = notification.dayOfWeek;
     const getDayCurrent  =  dateFns.getDay(dateCurrent);
 
       if(scheduledDay === getDayCurrent){
         
-        const scheduledHour = item.hour;
+        const scheduledHour = notification.hour;
         const getHourCurrent = dateFns.getHours(dateCurrent);
       
         if( getHourCurrent === scheduledHour ){
 
-          const scheduledMinute = item.minute;
+          const scheduledMinute = notification.minute;
           const getMinuteCurrent = dateFns.getMinutes(dateCurrent);
 
           if( getMinuteCurrent === scheduledMinute){
             console.log("Dia da semana ok!")
             console.log("Hora ok!");
             console.log("Minuto ok!")
-            console.log("Enviando notificação ...", item.name)
-            sendPushNotification(item);
+
+            usuarios.map( async (user) => {
+              sendPushNotification(notification, user);
+             
+            })
             console.log("------------------------")
           }
       }
