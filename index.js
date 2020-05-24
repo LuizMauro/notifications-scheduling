@@ -10,13 +10,13 @@ const notifications = [
   { name:"notficação 5", body: "body notification 5", dayOfWeek: 6, hour: 23, minute: 55 },
   ]
 
-const usuarios = [ {nome: "Luiz Mauro", token:"ExponentPushToken[VP4zBCEcrzuOK6VFudF4qd]" } ];
+const users = [ {name: "Luiz Mauro", userToken:"ExponentPushToken[VP4zBCEcrzuOK6VFudF4qd]" } ];
 
   sendPushNotification = async (notification, user) => {
     const message = {
-      to: user.token,
+      to: user.userToken,
       sound: 'default',
-      title: `${user.nome} venha dar uma olhadinha!`,
+      title: `${user.name} venha conferir!`,
       body: notification.body,
       data: { data: "Conteudo" },
       _displayInForeground: true,
@@ -65,7 +65,7 @@ new CronJob('0 * * * * *', () => {
             console.log("Hora ok!");
             console.log("Minuto ok!")
 
-            usuarios.map( async (user) => {
+            users.map( async (user) => {
               sendPushNotification(notification, user);
              
             })
