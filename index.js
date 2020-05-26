@@ -2,15 +2,19 @@ const CronJob = require("cron").CronJob
 const dateFns= require("date-fns");
 const fetch = require('node-fetch');
 
+
 const notifications = [ 
   { name:"notficação 1", body: "body notification 1", dayOfWeek: 2, hour: 14, minute: 00 },
   { name:"notficação 2", body: "body notification 2", dayOfWeek: 6, hour: 23, minute: 44  },
   { name:"notficação 3", body: "body notification 3", dayOfWeek: 6, hour: 23, minute: 45 },
   { name:"notficação 4", body: "body notification 4", dayOfWeek: 6, hour: 23, minute: 45 },
-  { name:"notficação 5", body: "body notification 5", dayOfWeek: 6, hour: 23, minute: 55 },
+  { name:"notficação 5", body: "body notification 5", dayOfWeek: 1, hour: 22, minute: 29 },
   ]
 
-const users = [ {name: "Luiz Mauro", userToken:"ExponentPushToken[VP4zBCEcrzuOK6VFudF4qd]" } ];
+const users = [ 
+  {name: "Usuario 1", userToken:"ExponentPushToken[VP4zBCEcrzuOK6VFudF4qd]" },
+  {name: "Usuario 2", userToken:"ExponentPushToken[VP4zBCEcrzuOK6VFudF4qd1]"} 
+];
 
   sendPushNotification = async (notification, user) => {
     const message = {
@@ -33,10 +37,11 @@ const users = [ {name: "Luiz Mauro", userToken:"ExponentPushToken[VP4zBCEcrzuOK6
     });
 
     if(response){
-      console.log(`${notification.name} - ${user.token}`);
+      console.log(`${notification.name} - token - ${user.userToken}`);
     }
     
   };
+
 
   
 new CronJob('0 * * * * *', () => {
@@ -75,6 +80,8 @@ new CronJob('0 * * * * *', () => {
     }
   });
 }, null, true, "America/Sao_Paulo")
+
+
 
 
 
