@@ -1,6 +1,7 @@
 const CronJob = require("cron").CronJob
-const dateFns= require("date-fns");
-const fetch = require('node-fetch');
+const dateFns = require("date-fns");
+const fetch   = require('node-fetch');
+const gcm     = require('node-gcm'); 
 
 
 const notifications = [ 
@@ -16,35 +17,38 @@ const users = [
   {name: "Usuario 2", userToken:"ExponentPushToken[VP4zBCEcrzuOK6VFudF4qd1]"} 
 ];
 
-  sendPushNotification = async (notification, user) => {
-    const message = {
-      to: user.userToken,
-      sound: 'default',
-      title: `${user.name} venha conferir!`,
-      body: notification.body,
-      data: { data: "Conteudo" },
-      _displayInForeground: true,
-    };
-    
-    const response = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
+
+  sendPusNotification = async (notification, user) =>{
+   
+  const sender = new gcm.Sender("AAAAKrbWcOk:APA91bGRAl5-6H5lMZ3XYsS2CE9PSwmvdJ03YEa0ffSg3_WooeiC6j--YJgKDx2k8n5xgHZ1EY9izUWrMJALzF5jCJZhgEuiN_XkJ5xXrJGHKPBWxeGnmpxkn7KIh7JhoHtoFEH9KbcQ");
+
+
+    const message = new gcm.Message ({
+      data:{
+        title: 'titulo3',
+        body: 'body3',
+        sound: 'default',
+        bagde: '1',
+        color: '#E5A95D',
+        image: "https://santuariosenhordobonfim.com/images/notificacao/icone-notificacao.png",
+      }
     });
 
-    if(response){
-      console.log(`${notification.name} - token - ${user.userToken}`);
-    }
-    
-  };
+    const regTokens = ['dxCH4Vmdb0I:APA91bFW2qX4aLCOtI4a6Y4JFjseqoPaKlOPy2kL7wSSKzNG-e47oUre6TLZq6yw8H3Szq9W807ozSKkI1BLCzHb-m-UyPRhebgW5MUj_fhHO87vwrOsW-3g7yn3wLEJLnjNHiUMeLaO'];
+
+    sender.send(message, { registrationTokens: regTokens}, (err, response) => {
+      if(err){
+        console.log(err);
+      }else{
+        console.log(response);
+      }
+    })
+
+  } 
 
 
   
-new CronJob('0 * * * * *', () => {
+new CronJob('0 */30 * * * *', () => {
   
   const dateCurrent = Date.now();
 
@@ -71,8 +75,9 @@ new CronJob('0 * * * * *', () => {
             console.log("Minuto ok!")
 
             users.map( async (user) => {
-              sendPushNotification(notification, user);
-             
+              if(user.userToken){
+                sendPushNotification(notification, user);
+              }
             })
             console.log("------------------------")
           }
@@ -80,8 +85,4 @@ new CronJob('0 * * * * *', () => {
     }
   });
 }, null, true, "America/Sao_Paulo")
-
-
-
-
 
